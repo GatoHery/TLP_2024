@@ -1,0 +1,3 @@
+C:/Users/yoshi/OneDrive/Documentos/GitHub/TLP_2024/lexer/cmake-build-debug/CMakeFiles/untitled1.dir
+C:/Users/yoshi/OneDrive/Documentos/GitHub/TLP_2024/lexer/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/yoshi/OneDrive/Documentos/GitHub/TLP_2024/lexer/cmake-build-debug/CMakeFiles/rebuild_cache.dir
