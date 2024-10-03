@@ -1,8 +1,9 @@
 package Type;
 
 public enum TokenType {
-    IDENTIFIER,
+	IDENTIFIER,
     NUMBER,
+    STRING,
     KEYWORD,
     OPERATOR,
     DELIMITER,

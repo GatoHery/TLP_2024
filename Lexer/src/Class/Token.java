@@ -3,7 +3,7 @@ package Class;
 import Type.TokenType;
 
 public class Token {
-    TokenType type;
+	TokenType type;
     String value;
 
     public Token(TokenType type, String value) {
@@ -22,22 +22,19 @@ public class Token {
 
 // Clase para representar la información almacenada en la tabla de símbolos
 class SymbolInfo {
-    String type;     // Tipo de dato (e.g., int, float, etc.)
-    String scope;    // Ámbito (e.g., global, local)
-    String value;    // Valor si es una constante
+    String type;
+    String description;
 
-    public SymbolInfo(String type, String scope, String value) {
+    public SymbolInfo(String type, String description) {
         this.type = type;
-        this.scope = scope;
-        this.value = value;
+        this.description = description;
     }
 
     @Override
     public String toString() {
         return "SymbolInfo{" +
                 "type='" + type + '\'' +
-                ", scope='" + scope + '\'' +
-                ", value='" + value + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }
