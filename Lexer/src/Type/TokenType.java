@@ -7,5 +7,6 @@ public enum TokenType {
     KEYWORD,
     OPERATOR,
     DELIMITER,
-    END_OF_FILE
+    END_OF_FILE,
+    ERROR
 }

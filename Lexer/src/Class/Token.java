@@ -3,7 +3,7 @@ package Class;
 import Type.TokenType;
 
 public class Token {
-	TokenType type;
+    TokenType type;
     String value;
 
     public Token(TokenType type, String value) {
@@ -11,12 +11,17 @@ public class Token {
         this.value = value;
     }
 
+    public TokenType getType() {
+        return type;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
     @Override
     public String toString() {
-        return "Token{" +
-                "type=" + type +
-                ", value='" + value + '\'' +
-                '}';
+        return String.format("Token { type=%s, value='%s' }", type, value);
     }
 }
 
