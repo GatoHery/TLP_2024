@@ -82,31 +82,40 @@ public class Lexer {
 
 		// Verificar si es una palabra clave
 		switch (value) {
-		case "include":
-		case "using":
-		case "namespace":
-		case "if":
-		case "while":
-		case "else":
-			symbolTable.put(value, new SymbolInfo("KEYWORD", "Palabra reservada del lenguaje"));
-			return new Token(TokenType.KEYWORD, value);
+			case "using":
+			case "namespace":
+			case "while":
+			case "if":
+			case "else":
+			case "switch":
+			case "for":
+			case "try":
+			case "catch":
+			case "break":
+			case "return":
+				symbolTable.put(value, new SymbolInfo("KEYWORD", "Palabra reservada del lenguaje"));
+				return new Token(TokenType.KEYWORD, value);
 
-		case "int":
-			symbolTable.put(value, new SymbolInfo("INT", "Identificador de tipo de dato"));
-			return new Token(TokenType.KEYWORD, value);
+			case "int":
+				symbolTable.put(value, new SymbolInfo("INT", "Identificador de tipo de dato"));
+				return new Token(TokenType.KEYWORD, value);
 
-		case "cout":
-			symbolTable.put(value, new SymbolInfo("BUILTIN_FUNCTIONS", "Operador de salida de datos estándar"));
-			return new Token(TokenType.IDENTIFIER, value);
+			case "cin":
+				symbolTable.put(value, new SymbolInfo("BUILTIN_FUNCTIONS", "Operador de entrada de datos estándar"));
+				return new Token(TokenType.IDENTIFIER, value);
 
-		case "main":
-			symbolTable.put(value, new SymbolInfo("ID", "Identificador de función principal"));
-			return new Token(TokenType.IDENTIFIER, value);
+			case "cout":
+				symbolTable.put(value, new SymbolInfo("BUILTIN_FUNCTIONS", "Operador de salida de datos estándar"));
+				return new Token(TokenType.IDENTIFIER, value);
 
-		default:
-			// Si es un identificador normal, registrarlo en la tabla de símbolos
-			symbolTable.put(value, new SymbolInfo("ID", "Identificador"));
-			return new Token(TokenType.IDENTIFIER, value);
+			case "main":
+				symbolTable.put(value, new SymbolInfo("ID", "Identificador de función principal"));
+				return new Token(TokenType.IDENTIFIER, value);
+
+			default:
+				// Si es un identificador normal, registrarlo en la tabla de símbolos
+				symbolTable.put(value, new SymbolInfo("ID", "Identificador"));
+				return new Token(TokenType.IDENTIFIER, value);
 		}
 	}
 
