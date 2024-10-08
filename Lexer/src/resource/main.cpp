@@ -1,0 +1,1 @@
+int #x# == $10.1; if(x + 3){ while(x){ x = x + 1;} }else{std::out<<'Nada'}
