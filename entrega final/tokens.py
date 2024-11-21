@@ -1,3 +1,4 @@
+#lexer
 import ply.lex as lex
 
 # List of token names. Required
@@ -30,6 +31,9 @@ tokens = [
     "COMMENT",
     "COMMENTBLOCK",
     "ASSIGNMENT",
+    #nuevos tokens
+    "ASSIGN",
+    #fin nuevos tokens
     "COLON",
     "QUESTION",
     "UNDERSCORE",
@@ -91,12 +95,15 @@ t_COMMA = r"\,"
 t_SEMICOLON = r"\;"
 t_APOSTROPHE = r"\'"
 t_QUOTE = r"\""
-t_ASSIGNMENT = r"\="
+#t_ASSIGNMENT = r"\="
 t_SQUOTE = r"\'"
 t_UNDERSCORE = r"\_"
 t_QUESTION = r"\?"
 t_COLON = r"\:"
 t_eof= r'\$'
+#nuevo
+t_ASSIGN = r"\="
+
 
 # A regular expression rule
 def t_COMMENT(t):
@@ -110,6 +117,12 @@ def t_COMMENTBLOCK(t):
 def t_INCLUDE(t):
     r"\#(include)\s<([a-z]|[A-Z])*.h>"
     #r"\#(include)\shola.h"
+    return t
+
+#cambio
+def t_RETURN(t):
+    r'\breturn\b'  # Coincide con la palabra completa 'return'
+    t.type = 'RETURN'  # Asegúrate de asignar un tipo específico, 'RETURN' para que no se confunda
     return t
 
 def t_ID(t):
@@ -147,9 +160,13 @@ def t_LETTER(t):
     return t
 '''
 
+#cambios
 def t_CONSTANT(t):
-    r"(\'.\') | (\d+) | (\d+(\.\d+)?) | (true|false) | (\".*\")"
+    r"(\d+(\.\d+)?) | (true|false) | (\"[^\"]*\") | \'.\'"
     return t
+
+
+
 
 # Define a rule so we can track line numbers
 def t_newline(t):

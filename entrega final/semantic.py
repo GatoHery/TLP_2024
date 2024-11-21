@@ -14,6 +14,8 @@ def analizar_codigo(codigo):
     patron_while = r'while\s*\((.*?)\)\s*{'
     patron_include = r'#include\s*<(.+?)>'
     patron_fin = r'}'
+    #nueva regla
+    patron_return = r'\s*return\s+(.*);'
 
     # Buscar coincidencias en el código
     coincidencias_funcion = re.match(patron_funcion, codigo)
@@ -25,6 +27,8 @@ def analizar_codigo(codigo):
     coincidencias_while = re.match(patron_while, codigo)
     coincidencias_include = re.match(patron_include, codigo)
     coincidencias_fin = re.match(patron_fin, codigo)
+    #nueva regla
+    coincidencias_return = re.match(patron_return, codigo)
 
     if coincidencias_funcion:
         tipo_retorno = coincidencias_funcion.group(1)
@@ -116,6 +120,7 @@ def analizar_codigo(codigo):
         }
     else:
         return None
+
 
 def analizar_codigo_desde_archivo():
     try:

@@ -103,13 +103,35 @@ table = [
     [SCont, 'ID', [SFnc]],
     [SFnc, 'LPAREN', ['LPAREN', SPar, 'RPAREN', 'LBRACE', Blq, 'RBRACE']],
     [SPar, 'DATATYPE', ['DATATYPE', 'ID', ParAux]],
+    [SPar, 'ID', ['OpAA', ParAux]],                 # Procesar argumentos (expresiones)
+    [SPar, 'ID', ['ID', ParAux]],                  # Identificador como argumento
+    [SPar, 'RPAREN', ['vacia']],                    # Sin argumentos
+    [SPar, 'CONSTANT', ['OpAA', ParAux]],          # Procesar constantes como argumentos
+    [SPar, 'CONSTANT', ['CONSTANT', ParAux]],      # Constante como argumento
     [ParAux, 'COMMA', ['COMMA', SPar]],              # Separador de parámetros
     [ParAux, 'RPAREN', ['vacia']],                   # Cierre de parámetros
     [Blq, 'RETURN', ['RETURN', OpAA, 'SEMICOLON', BlqAux]],  # Procesar 'return'
     [OpAA, 'ID', ['ID', OpAB]],                             # Operando inicial
+    [OpAA, 'ID', ['ID']],
+    [OpAA, 'ID', ['ID', 'LPAREN', SPar, 'RPAREN']],  # ID con paréntesis y argumentos
+    [OpAA, 'CONSTANT', ['CONSTANT']],              # Constantes como operandos
+    [OpAA, 'CONSTANT', ['CONSTANT', OpAB]],
     [OpAB, 'PLUS', ['PLUS', OpAA]],                         # Operación aritmética
+    [OpAB, 'TIMES', ['TIMES', OpAA]],
     [OpAB, 'SEMICOLON', ['vacia']],                         # Fin de expresión
+    [OpAB, 'LPAREN', ['LPAREN', SPar, 'RPAREN']],   # Llamada a función con argumentos
+    [OpAB, 'vacia', ['vacia']],                     # Simple identificador
     [BlqAux, 'RBRACE', ['vacia']],                          # Fin del bloque
+    [DvAsg, 'DATATYPE', ['DATATYPE', 'ID', 'ASSIGN', OpAA, 'SEMICOLON']],  # Asignación directa
+    [Blq, 'DATATYPE', ['DvAsg', BlqAux]],  # Declaración y asignación
+    [Blq, 'ID', ['OpAA', 'SEMICOLON', BlqAux]],  # Llamada a función como expresión
+    [BlqAux, 'RBRACE', ['vacia']],  # Fin del bloque
+    [SCont, 'RETURN', ['RETURN', 'expression', 'SEMICOLON']],
+    [MS, 'RETURN', None],
+    [MS, 'RETURN', ['RETURN', SCont]],  # 'RETURN' seguido por lo que quieras procesar en SCont
+    [MS, 'IF', [SIf]],  # Agrega una regla para 'if'
+    [MS, 'ELSE', [Else]],  # Agrega una regla para 'else'
+    [MS, 'ID', [IdType]],  # Para identificar un ID
 
     # Fin del bloque
     [SCont, 'ID', [Body, BodyAux]],
