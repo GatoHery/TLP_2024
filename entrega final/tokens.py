@@ -92,7 +92,7 @@ t_RBRACE = r"\}"
 t_LBRACKET = r"\["
 t_RBRACKET = r"\]"
 t_COMMA = r"\,"
-t_SEMICOLON = r"\;"
+t_SEMICOLON = r";"
 t_APOSTROPHE = r"\'"
 t_QUOTE = r"\""
 #t_ASSIGNMENT = r"\="
@@ -165,7 +165,19 @@ def t_CONSTANT(t):
     r"(\d+(\.\d+)?) | (true|false) | (\"[^\"]*\") | \'.\'"
     return t
 
+def p_statement_return(p):
+    'statement : RETURN expression SEMICOLON'
+    # Aquí p[2] será la expresión que sigue al `return` (en tu caso, `0`)
+    print(f"Return statement with expression: {p[2]}")
 
+def p_statement(p):
+    '''statement : RETURN expression SEMICOLON
+                 | other_statements_here'''
+    # Aquí manejarías las diferentes declaraciones de forma adecuada
+
+def p_expression_number(p):
+    'expression : CONSTANT'
+    p[0] = p[1]  # Asigna el valor de la constante
 
 
 # Define a rule so we can track line numbers

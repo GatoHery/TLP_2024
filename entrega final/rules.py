@@ -36,6 +36,7 @@ Cond = "Cond"
 CondB = "CondB"
 OpC = "OpC"
 CondA = "CondA"
+RETURN = "RETURN"
 
 # '''
 table = [
@@ -127,11 +128,31 @@ table = [
     [Blq, 'ID', ['OpAA', 'SEMICOLON', BlqAux]],  # Llamada a función como expresión
     [BlqAux, 'RBRACE', ['vacia']],  # Fin del bloque
     [SCont, 'RETURN', ['RETURN', 'expression', 'SEMICOLON']],
+    [SCont, 'RETURN', ['RETURN', OpAA, 'SEMICOLON', SCont]],  # 'RETURN' seguido por lo que quieras procesar en SCont
+    
     [MS, 'RETURN', None],
     [MS, 'RETURN', ['RETURN', SCont]],  # 'RETURN' seguido por lo que quieras procesar en SCont
     [MS, 'IF', [SIf]],  # Agrega una regla para 'if'
     [MS, 'ELSE', [Else]],  # Agrega una regla para 'else'
     [MS, 'ID', [IdType]],  # Para identificar un ID
+    [MS, 'RETURN', [SCont]],  # Permitimos RETURN fuera de una función
+    [RETURN, ['SCont']],  # Permitir RETURN en cualquier contexto
+    [Blq, 'RETURN', ['RETURN', 'SEMICOLON', BlqAux]],  # 'RETURN' dentro de un bloque sin valor
+
+    [MS, 'DATATYPE', [SCont]],  # Entrada principal para funciones
+    [SCont, 'DATATYPE', [Body, BodyAux]],
+    [Body, 'DATATYPE', ['DATATYPE', 'ID', SFnc]],  # Declaración de funciones
+    [SFnc, 'LPAREN', ['LPAREN', SPar, 'RPAREN', 'LBRACE', Blq, 'RBRACE']],  # Función completa
+    [SPar, 'DATATYPE', ['DATATYPE', 'ID', ParAux]],  # Parámetros
+    [ParAux, 'COMMA', ['COMMA', SPar]],
+    [ParAux, 'RPAREN', ['vacia']],  # Cierre de parámetros
+    [Blq, 'RETURN', ['RETURN', OpAA, 'SEMICOLON', BlqAux]],  # Return con expresión
+    [Blq, 'RETURN', ['RETURN', 'SEMICOLON', BlqAux]],        # Return sin expresión
+    [Blq, 'DATATYPE', ['DATATYPE', 'ID', 'SEMICOLON', BlqAux]],  # Declaración de variables
+    [BlqAux, 'RBRACE', ['vacia']],  # Fin del bloque
+    [OpAA, 'ID', ['ID']],  # Identificador
+    [OpAA, 'CONSTANT', ['CONSTANT']],  # Constante
+    [OpAA, 'ID', ['ID', 'LPAREN', SPar, 'RPAREN']],  # Llamada a función
 
     # Fin del bloque
     [SCont, 'ID', [Body, BodyAux]],

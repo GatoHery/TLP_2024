@@ -45,7 +45,6 @@ def main():
 
     rulesNode=stack[-1] #primer elemento de izq a der
     tok=tokens.lexer.token() #lee el primer token
-    print(f"TOKEN: {tok.type}, VALUE: {tok.value}, LINE: {tok.lineno}, POS: {tok.lexpos}")
     debug(tok)
     debug(tok.type, tok.value, tok.lineno, tok.lexpos)
     while True:
@@ -184,11 +183,12 @@ def printError(inputFile, completeCode, rulesNode, tok, errorType):
     print(" " * posMark + "^^^")
 
 def addTokenToLine(tok):
-    if tok.type == "LBRACE" or tok.type == "RBRACE" or tok.type == "SEMICOLON" :
-        #Hacemos el análisis de la línea y limpiamos el arreglo
+    print(f"Procesando token: {tok.type}, valor: {tok.value}")
+    if tok.type == "LBRACE" or tok.type == "RBRACE" or tok.type == "SEMICOLON":
+        # Hacemos el análisis de la línea y limpiamos el arreglo
         processLine()
         lineTokens.clear()
-    else :
+    else:
         lineTokens.append(tok)
 
 
