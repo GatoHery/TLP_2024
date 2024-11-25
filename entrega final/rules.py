@@ -154,6 +154,11 @@ table = [
     [OpAA, 'CONSTANT', ['CONSTANT']],  # Constante
     [OpAA, 'ID', ['ID', 'LPAREN', SPar, 'RPAREN']],  # Llamada a función
 
+    [SCont, 'COMMENT', ['vacia']],  # Ignorar comentarios dentro de SCont
+    [Blq, 'COMMENT', ['COMMENT', BlqAux]],  # Permitir comentarios dentro de bloques
+    [Blq, 'RBRACE', ['vacia']],  # Bloque vacío
+
+
     # Fin del bloque
     [SCont, 'ID', [Body, BodyAux]],
     [SCont, 'LBRACE', None],

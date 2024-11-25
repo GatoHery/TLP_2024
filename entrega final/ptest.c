@@ -1,4 +1,4 @@
 int main() {
-    int x = 0;
-    return x;
+    /*comentario*/
+    int a = 1;
 }
