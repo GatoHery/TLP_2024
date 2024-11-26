@@ -241,3 +241,20 @@ def analizar_codigo_desde_archivo():
         print(f"Error inesperado: {e}")
     else:
         print(f"Análisis completado. Total de líneas procesadas: {count}")
+
+
+
+#Prueba para int a="hola";
+def check_type_compatibility(datatype, value):
+    if datatype == "int" and not value.isdigit():
+        return False  # Si es int, pero el valor no es un número
+    if datatype == "char" and not (len(value) == 3 and value.startswith("'") and value.endswith("'")):
+        return False  # Validación simple para char (por ejemplo: 'a')
+    return True
+
+# Dentro de la validación de declaraciones
+def validate_declaration(datatype, identifier, value):
+    if not check_type_compatibility(datatype, value):
+        print(f"Error semántico: Incompatibilidad de tipos en la asignación a '{identifier}'.")
+    else:
+        print(f"'{identifier}' asignado correctamente.")        

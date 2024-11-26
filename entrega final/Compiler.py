@@ -145,21 +145,28 @@ def main():
 
         #Imprimamos el árbol sintáctico
         
-        print("")
-        print("*****************************")
-        print(">> Arbol Sintáctico: ")
-        print("*****************************")
-        st.walkTree(mainNode)
-
-        st.podeTree(mainNode)
-        print("")
-        print("*****************************")
-        print(">> Arbol Sintáctico Resumido: ")
-        print("*****************************")
-        st.walkTree(mainNode)
+      #Imprimamos el árbol sintáctico
         
+        opcion = input("\n¿Desea ver el árbol sintáctico? (y/n): ").strip().lower()
+
+        if opcion == 'y':
+            print("\n*****************************")
+            print(">> Árbol Sintáctico:")
+            print("*****************************")
+            st.walkTree(mainNode)
+
+            #Se encuentra comentado el arbol resumido
+            #st.podeTree(mainNode)
+            #print("\n*****************************")
+            #print(">> Árbol Sintáctico Resumido:")
+            #print("*****************************")
+            #st.walkTree(mainNode)
+        else:
+            print("\nCompilación finalizada.")
+
     else:
-        print("Errores de compilación: ", inputFile, ": tiene", hasErrors, "error(es).")    
+        print(f"Errores de compilación: {inputFile} tiene {hasErrors} error(es).") 
+    
     
     # err.createLists()
 
