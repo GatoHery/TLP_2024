@@ -1,3 +1,4 @@
+#validaciones logicas
 import re
 
 count = 0
@@ -31,6 +32,8 @@ def analizar_codigo(codigo):
     coincidencias_include = re.match(patron_include, codigo)
     coincidencias_fin = re.match(patron_fin, codigo)
     coincidencias_return = re.match(patron_return, codigo)
+
+
 
     # Análisis de funciones
     if coincidencias_funcion:
@@ -69,25 +72,53 @@ def analizar_codigo(codigo):
         }
 
     # Análisis de declaraciones de variables en una línea
+    # Análisis de declaraciones de variables en una línea
+    # Análisis de declaraciones de variables en una línea
     elif coincidencias_variable_linea:
         tipo_variable = coincidencias_variable_linea.group(1)
         nombre_variable = coincidencias_variable_linea.group(2)
         valor_asignado = coincidencias_variable_linea.group(3)
 
-        # Guardar la variable en el diccionario de variables
-        if valor_asignado is not None:
-            variables[nombre_variable] = {
-                'valor': valor_asignado,
-                'tipo': tipo_variable
+        if tipo_variable not in ["int", "float", "char"]:  # Agrega otros tipos permitidos
+            return {
+                'error': f"Tipo de variable no reconocido: {tipo_variable}"
             }
-        else:
-            variables[nombre_variable] = {'valor': None, 'tipo': tipo_variable}  # Solo declaración sin asignación
+
+        if not re.match(r'^[_a-zA-Z]\w*$', nombre_variable):  # Validar identificador válido
+            return {
+                'error': f"Nombre de variable inválido: {nombre_variable}"
+            }
+
+        # Verificar si valor_asignado es una constante y convertirla al tipo adecuado
+        if valor_asignado:
+            # Si el valor es una constante, verificar el tipo
+            if tipo_variable == "int":
+                try:
+                    valor_asignado = int(valor_asignado)  # Convertir a entero
+                except ValueError:
+                    return {'error': f"Valor '{valor_asignado}' no es un entero válido"}
+            elif tipo_variable == "float":
+                try:
+                    valor_asignado = float(valor_asignado)  # Convertir a flotante
+                except ValueError:
+                    return {'error': f"Valor '{valor_asignado}' no es un flotante válido"}
+            elif tipo_variable == "char":
+                if len(valor_asignado) == 3 and valor_asignado.startswith("'") and valor_asignado.endswith("'"):
+                    valor_asignado = valor_asignado[1]  # Eliminar las comillas simples
+                else:
+                    return {'error': f"Valor '{valor_asignado}' no es un carácter válido"}
+
+        variables[nombre_variable] = {
+            'valor': valor_asignado,
+            'tipo': tipo_variable
+        }
 
         return {
             'tipo_variable': tipo_variable,
             'nombre_variable': nombre_variable,
             'valor_asignado': valor_asignado
         }
+
 
     # Análisis de declaraciones de variables en varias líneas
     elif coincidencias_variable_multilinea:
@@ -188,13 +219,25 @@ def analizar_codigo(codigo):
 
 
 def analizar_codigo_desde_archivo():
+    count = 0  # Inicializar el contador
+
     try:
-        file1 = open('ptest.c', 'r')
-        while True:
-            global count
-            count += 1
+        # Usar un administrador de contexto para abrir el archivo
+        with open('ptest.c', 'r') as file1:
+            while True:
+                # Leer la siguiente línea
+                line = file1.readline()
 
-            # Obtener la siguiente línea del archivo
-            line = file1.readline()
+                # Si la línea está vacía, hemos llegado al final del archivo
+                if not line:
+                    break
 
-            # Si la línea está vacía,
+                count += 1  # Incrementar el contador
+                print(f"Línea {count}: {line.strip()}")  # Procesar la línea (ejemplo: imprimir)
+                
+    except FileNotFoundError:
+        print("Error: El archivo 'ptest.c' no existe.")
+    except Exception as e:
+        print(f"Error inesperado: {e}")
+    else:
+        print(f"Análisis completado. Total de líneas procesadas: {count}")

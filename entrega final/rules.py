@@ -158,6 +158,10 @@ table = [
     [Blq, 'COMMENT', ['COMMENT', BlqAux]],  # Permitir comentarios dentro de bloques
     [Blq, 'RBRACE', ['vacia']],  # Bloque vacío
 
+    [OpAA, 'CONSTANT_INT', ['CONSTANT_INT']],  # Valor entero como operando
+    [OpAA, 'CONSTANT_FLOAT', ['CONSTANT_FLOAT']],  # Valor flotante como operando
+    [OpAA, 'CONSTANT_STRING', ['CONSTANT_STRING']],  # Valor cadena como operando
+    [OpAA, 'ID', ['ID']],  # Identificador como operando
 
     # Fin del bloque
     [SCont, 'ID', [Body, BodyAux]],

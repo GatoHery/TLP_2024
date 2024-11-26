@@ -74,7 +74,7 @@ class WhileLoopNode(ASTNode):
 
 def walkTree(node, level = 0):
     # print (str(level) + "-" + "  " * level + str(node) + " (" + str(node.parent) + ") ")
-    print (str(level) + "-" + "  " * level + str(node) +  (" (" + node.value + ")" if node.symbol == "T" else "") + " [" + node.symbol + "]")
+    print(str(level) + "-" + "  " * level + str(node) +  (" (" + str(node.value) + ")" if node.symbol == "T" else "") + " [" + str(node.symbol) + "]")
     # print ("  -> hijos:" + str(len(node.body)))
     if (node.body != None and node.body != []):
         for element in reversed(node.body):

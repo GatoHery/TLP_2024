@@ -33,6 +33,11 @@ tokens = [
     "ASSIGNMENT",
     #nuevos tokens
     "ASSIGN",
+    "CONSTANT_STRING",
+    "CONSTANT_INT",
+    "CONSTANT_FLOAT",
+    "CONSTANT_BOOL",
+    "CONSTANT_CHAR",
     #fin nuevos tokens
     "COLON",
     "QUESTION",
@@ -92,7 +97,6 @@ t_RBRACE = r"\}"
 t_LBRACKET = r"\["
 t_RBRACKET = r"\]"
 t_COMMA = r"\,"
-t_SEMICOLON = r";"
 t_APOSTROPHE = r"\'"
 t_QUOTE = r"\""
 #t_ASSIGNMENT = r"\="
@@ -102,7 +106,6 @@ t_QUESTION = r"\?"
 t_COLON = r"\:"
 t_eof= r'\$'
 #nuevo
-t_ASSIGN = r"\="
 
 
 # A regular expression rule
@@ -117,6 +120,32 @@ def t_COMMENTBLOCK(t):
 def t_INCLUDE(t):
     r"\#(include)\s<([a-z]|[A-Z])*.h>"
     #r"\#(include)\shola.h"
+    return t
+
+#cambios
+def t_CONSTANT_INT(t):
+    r'\d+'  # Coincide solo con enteros
+    t.value = int(t.value)
+    return t
+
+def t_CONSTANT_FLOAT(t):
+    r'\d+\.\d+'  # Coincide con flotantes
+    t.value = float(t.value)
+    return t
+
+def t_CONSTANT_BOOL(t):
+    r'(true|false)'
+    t.value = True if t.value == "true" else False
+    return t
+
+def t_CONSTANT_STRING(t):
+    r'"[^"]*"'  # Coincide con cadenas entre comillas dobles
+    t.value = t.value[1:-1]  # Elimina las comillas
+    return t
+
+def t_CONSTANT_CHAR(t):
+    r"'.'"  # Coincide con un carácter entre comillas simples
+    t.value = t.value[1:-1]  # Elimina las comillas
     return t
 
 #cambio
@@ -161,9 +190,15 @@ def t_LETTER(t):
 '''
 
 #cambios
-def t_CONSTANT(t):
-    r"(\d+(\.\d+)?) | (true|false) | (\"[^\"]*\") | \'.\'"
+def t_ASSIGN(t):
+    r'='
     return t
+
+def t_SEMICOLON(t):
+    r';'
+    return t
+
+
 
 def p_statement_return(p):
     'statement : RETURN expression SEMICOLON'
