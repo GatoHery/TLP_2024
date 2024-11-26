@@ -200,9 +200,13 @@ def addTokenToLine(tok):
 
 
 def buscar_en_tabla(no_terminal, terminal):
+    print(f"Buscando en tabla: No-terminal={no_terminal}, Terminal={terminal}")
     for i in range(len(rules.table)):
-        if( rules.table[i][0] == no_terminal and rules.table[i][1] == terminal):
-            return rules.table[i][2] #retorno la celda
+        if rules.table[i][0] == no_terminal and rules.table[i][1] == terminal:
+            print(f"Match encontrado: {rules.table[i]}")
+            return rules.table[i][2]
+    print("No match found.")
+    return None
 
 def agregar_pila(parentNode, produccion, token):
     for elemento in reversed(produccion):

@@ -130,15 +130,24 @@ table = [
     [SCont, 'RETURN', ['RETURN', 'expression', 'SEMICOLON']],
     [SCont, 'RETURN', ['RETURN', OpAA, 'SEMICOLON', SCont]],  # 'RETURN' seguido por lo que quieras procesar en SCont
     
-    [MS, 'RETURN', None],
-    [MS, 'RETURN', ['RETURN', SCont]],  # 'RETURN' seguido por lo que quieras procesar en SCont
+    
+    # Rules for blocks
     [MS, 'IF', [SIf]],  # Agrega una regla para 'if'
     [MS, 'ELSE', [Else]],  # Agrega una regla para 'else'
     [MS, 'ID', [IdType]],  # Para identificar un ID
-    [MS, 'RETURN', [SCont]],  # Permitimos RETURN fuera de una función
-    [RETURN, ['SCont']],  # Permitir RETURN en cualquier contexto
-    [Blq, 'RETURN', ['RETURN', 'SEMICOLON', BlqAux]],  # 'RETURN' dentro de un bloque sin valor
 
+    # Handle blocks and return statements
+    [Blq, 'RETURN', ['RETURN', OpAA, 'SEMICOLON', BlqAux]],  # Return with expression
+    [Blq, 'RETURN', ['RETURN', 'SEMICOLON', BlqAux]],        # Return without expression
+    [Blq, 'DATATYPE', ['DATATYPE', 'ID', 'SEMICOLON', BlqAux]],  # Variable declaration
+
+    # Allow continuation after a RETURN
+    [BlqAux, 'RETURN', [Blq]],    # Allow another statement (like RETURN) after RETURN
+    [BlqAux, 'DATATYPE', [Blq]],  # Handle declarations after RETURN
+    [BlqAux, 'ID', [Blq]],        # Handle expressions/statements after RETURN
+    [BlqAux, 'RBRACE', ['vacia']],  # End of block
+
+    # Function and parameter handling
     [MS, 'DATATYPE', [SCont]],  # Entrada principal para funciones
     [SCont, 'DATATYPE', [Body, BodyAux]],
     [Body, 'DATATYPE', ['DATATYPE', 'ID', SFnc]],  # Declaración de funciones
@@ -146,14 +155,9 @@ table = [
     [SPar, 'DATATYPE', ['DATATYPE', 'ID', ParAux]],  # Parámetros
     [ParAux, 'COMMA', ['COMMA', SPar]],
     [ParAux, 'RPAREN', ['vacia']],  # Cierre de parámetros
-    [Blq, 'RETURN', ['RETURN', OpAA, 'SEMICOLON', BlqAux]],  # Return con expresión
-    [Blq, 'RETURN', ['RETURN', 'SEMICOLON', BlqAux]],        # Return sin expresión
-    [Blq, 'DATATYPE', ['DATATYPE', 'ID', 'SEMICOLON', BlqAux]],  # Declaración de variables
-    [BlqAux, 'RBRACE', ['vacia']],  # Fin del bloque
-    [OpAA, 'ID', ['ID']],  # Identificador
-    [OpAA, 'CONSTANT', ['CONSTANT']],  # Constante
-    [OpAA, 'ID', ['ID', 'LPAREN', SPar, 'RPAREN']],  # Llamada a función
 
+
+    # Comments and other tokens
     [SCont, 'COMMENT', ['vacia']],  # Ignorar comentarios dentro de SCont
     [Blq, 'COMMENT', ['COMMENT', BlqAux]],  # Permitir comentarios dentro de bloques
     [Blq, 'RBRACE', ['vacia']],  # Bloque vacío
