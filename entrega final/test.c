@@ -1,3 +1,4 @@
-int main(){
-    bool a = false;
+int main() {
+    int a = 5;
+    return a;
 }

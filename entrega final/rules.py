@@ -131,23 +131,23 @@ table = [
     [SCont, 'RETURN', ['RETURN', OpAA, 'SEMICOLON', SCont]],  # 'RETURN' seguido por lo que quieras procesar en SCont
     
     
-    # Rules for blocks
+    # Reglas de condicionales
     [MS, 'IF', [SIf]],  # Agrega una regla para 'if'
     [MS, 'ELSE', [Else]],  # Agrega una regla para 'else'
     [MS, 'ID', [IdType]],  # Para identificar un ID
 
-    # Handle blocks and return statements
+    # Acepta más de una declaración en un bloque
     [Blq, 'RETURN', ['RETURN', OpAA, 'SEMICOLON', BlqAux]],  # Return with expression
     [Blq, 'RETURN', ['RETURN', 'SEMICOLON', BlqAux]],        # Return without expression
     [Blq, 'DATATYPE', ['DATATYPE', 'ID', 'SEMICOLON', BlqAux]],  # Variable declaration
 
-    # Allow continuation after a RETURN
+    # Acepta más de una declaración en un bloque
     [BlqAux, 'RETURN', [Blq]],    # Allow another statement (like RETURN) after RETURN
     [BlqAux, 'DATATYPE', [Blq]],  # Handle declarations after RETURN
     [BlqAux, 'ID', [Blq]],        # Handle expressions/statements after RETURN
     [BlqAux, 'RBRACE', ['vacia']],  # End of block
 
-    # Function and parameter handling
+    # Reglas de condicionales
     [MS, 'DATATYPE', [SCont]],  # Entrada principal para funciones
     [SCont, 'DATATYPE', [Body, BodyAux]],
     [Body, 'DATATYPE', ['DATATYPE', 'ID', SFnc]],  # Declaración de funciones
@@ -157,7 +157,7 @@ table = [
     [ParAux, 'RPAREN', ['vacia']],  # Cierre de parámetros
 
 
-    # Comments and other tokens
+    # Comentarios y bloque vacio
     [SCont, 'COMMENT', ['vacia']],  # Ignorar comentarios dentro de SCont
     [Blq, 'COMMENT', ['COMMENT', BlqAux]],  # Permitir comentarios dentro de bloques
     [Blq, 'RBRACE', ['vacia']],  # Bloque vacío
@@ -167,6 +167,14 @@ table = [
     [OpAA, 'CONSTANT_STRING', ['CONSTANT_STRING']],  # Valor cadena como operando
     [OpAA, 'CONSTANT_BOOL', ['CONSTANT_BOOL']],  # Valor bool como operando
     [OpAA, 'ID', ['ID']],  # Identificador como operando
+
+    # Operadores de comparación
+    [OpC, 'EQUALS', ['EQUALS']],
+    [OpC, 'NOTEQUALS', ['NOTEQUALS']],
+    [OpC, 'LESS', ['LESS']],
+    [OpC, 'GREATER', ['GREATER']],
+    [OpC, 'LESSEQUAL', ['LESSEQUAL']],
+    [OpC, 'GREATEREQUAL', ['GREATEREQUAL']],
 
     # Fin del bloque
     [SCont, 'ID', [Body, BodyAux]],
@@ -829,6 +837,13 @@ table = [
     [CondB, 'ELSE', None],
     [CondB, 'WHILE', None],
     [CondB, 'eof', None],
+    # regla de constantes
+    [CondB, 'ID', ['ID']],
+    [CondB, 'CONSTANT_INT', ['CONSTANT_INT']],
+    [CondB, 'CONSTANT_FLOAT', ['CONSTANT_FLOAT']],
+    [CondB, 'CONSTANT_STRING', ['CONSTANT_STRING']],
+    [CondB, 'CONSTANT_BOOL', ['CONSTANT_BOOL']],
+    [CondB, 'CONSTANT_CHAR', ['CONSTANT_CHAR']],
     [OpC, 'INCLUDE', None],
     [OpC, 'LPAREN', None],
     [OpC, 'RPAREN', None],
@@ -924,6 +939,8 @@ table = [
     [Else, 'OR', None],
     [Else, 'IF', ['vacia']],
     [Else, 'ELSE', ['ELSE', Else2]],
+    # acepta return vacio
+    [Else, 'RETURN', ['vacia']],
     [Else, 'WHILE', ['vacia']],
     [Else, 'eof', None],
     [Else2, 'INCLUDE', None],

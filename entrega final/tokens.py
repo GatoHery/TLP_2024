@@ -99,7 +99,7 @@ t_RBRACKET = r"\]"
 t_COMMA = r"\,"
 t_APOSTROPHE = r"\'"
 t_QUOTE = r"\""
-#t_ASSIGNMENT = r"\="
+t_ASSIGN = r"\="
 t_SQUOTE = r"\'"
 t_UNDERSCORE = r"\_"
 t_QUESTION = r"\?"
@@ -189,10 +189,10 @@ def t_LETTER(t):
     return t
 '''
 
-#cambios
-def t_ASSIGN(t):
-    r'='
-    return t
+# cambios
+# def t_ASSIGN(t):
+#     r'='
+#     return t
 
 def t_SEMICOLON(t):
     r';'
