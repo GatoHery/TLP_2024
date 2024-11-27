@@ -21,6 +21,12 @@ hasErrors = 0
 
 mainNode = st.MainNode("N", None, rules.MS)
 stack = [st.crearNodo("N", None, "eof"), mainNode]
+
+def verificar_inclusion_bool(codigo):
+    if 'bool' in codigo and '#include <stdbool.h>' not in codigo:
+        return False
+    return True
+
 # Ingresamos el primer nodo, MAIN
 
 debug(stack)
@@ -42,6 +48,11 @@ def main():
     #almacena el código leido
     completeCode = f.read()
     print("Compilando", inputFile, "...")
+
+    # Verificamos si se incluye la librería stdbool.h en caso de que se utilice bool
+    if not verificar_inclusion_bool(completeCode):
+        print("Error: Debe incluir la librería stdbool.h si se utiliza el tipo de dato bool.")
+        return
 
     rulesNode=stack[-1] #primer elemento de izq a der
     tok=tokens.lexer.token() #lee el primer token
@@ -230,32 +241,48 @@ def processLine() :
         pos += 1
     debug("======= ===== =========")
         
-def processToken(tok, pos) :
-    if tok.type == "ID" :
+def processToken(tok, pos):
+    global hasErrors
+    if tok.type == "ID":
         idInstance = tokens.Identifier()
-        if ids.get(tok.value) != None :
+        if ids.get(tok.value) is not None:
             idInstance = ids[tok.value]
-        else :
+        else:
             idInstance.name = tok.value
             idInstance.scope = globalScope
 
-        # Buscamos el tipo de dato
-        for i in range(pos - 1, -1, -1) :
-            if lineTokens[i].type == "DATATYPE" :
+        # Check if the token is part of a declaration
+        is_declaration = False
+        for i in range(pos - 1, -1, -1):
+            if lineTokens[i].type == "DATATYPE":
                 idInstance.dataType = lineTokens[i].value
-            else : 
-                if lineTokens[i].type == "ID" and lineTokens[i].value[0] == lineTokens[i].value[0].upper() :
-                    idInstance.dataType = lineTokens[i].value
+                is_declaration = True
+                break
+            elif lineTokens[i].type == "ID" and lineTokens[i].value[0] == lineTokens[i].value[0].upper():
+                idInstance.dataType = lineTokens[i].value
+                is_declaration = True
+                break
 
-        # Buscamos el valor
+        if is_declaration:
+            # Check for redeclaration in the same scope
+            if idInstance.name in ids and ids[idInstance.name].scope == globalScope:
+                print(f"Error: existe variable repetida '{idInstance.name}' en la misma función.")
+                hasErrors += 1
+            else:
+                ids[idInstance.name] = idInstance
+        else:
+            # Handle variable usage
+            if idInstance.name not in ids:
+                print(f"Error: variable '{idInstance.name}' no declarada.")
+                hasErrors += 1
+
+        # Assign value if it's a declaration with an assignment
         value = ""
-        debug(pos+1, len(lineTokens))
-        if len(lineTokens) > (pos+1) and lineTokens[pos + 1].type == "ASSIGNMENT" :
-            for i in range(pos + 2, len(lineTokens)) :
-                debug(i, lineTokens[i])
-                if lineTokens[i].type in ["COMMA", "SEMICOLON", "RPAREN", "COLON"] :
+        if is_declaration and len(lineTokens) > (pos + 1) and lineTokens[pos + 1].type == "ASSIGNMENT":
+            for i in range(pos + 2, len(lineTokens)):
+                if lineTokens[i].type in ["COMMA", "SEMICOLON", "RPAREN", "COLON"]:
                     break
-                else :
+                else:
                     value += str(lineTokens[i].value)
             idInstance.value = value
 

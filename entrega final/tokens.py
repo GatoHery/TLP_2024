@@ -165,7 +165,7 @@ def t_ID(t):
     return t
 
 def t_DATATYPE(t):
-    r'(int|float|char|double|string)'
+    r'(int|float|char|double|bool)'
     return t
 
 '''
