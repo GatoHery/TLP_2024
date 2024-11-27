@@ -21,6 +21,12 @@ hasErrors = 0
 
 mainNode = st.MainNode("N", None, rules.MS)
 stack = [st.crearNodo("N", None, "eof"), mainNode]
+
+def verificar_inclusion_bool(codigo):
+    if 'bool' in codigo and '#include <stdbool.h>' not in codigo:
+        return False
+    return True
+
 # Ingresamos el primer nodo, MAIN
 
 debug(stack)
@@ -42,6 +48,11 @@ def main():
     #almacena el código leido
     completeCode = f.read()
     print("Compilando", inputFile, "...")
+
+    # Verificamos si se incluye la librería stdbool.h en caso de que se utilice bool
+    if not verificar_inclusion_bool(completeCode):
+        print("Error: Debe incluir la librería stdbool.h si se utiliza el tipo de dato bool.")
+        return
 
     rulesNode=stack[-1] #primer elemento de izq a der
     tok=tokens.lexer.token() #lee el primer token
