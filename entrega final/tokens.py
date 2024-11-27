@@ -123,14 +123,15 @@ def t_INCLUDE(t):
     return t
 
 #cambios
+# FLOAT debe estar antes que INT para prioridad
+def t_CONSTANT_FLOAT(t):
+    r'\d+\.\d+|\.\d+|\d+\.'  # Coincide con valores como 12.1, .1, y 12.
+    t.value = float(t.value)
+    return t
+
 def t_CONSTANT_INT(t):
     r'\d+'  # Coincide solo con enteros
     t.value = int(t.value)
-    return t
-
-def t_CONSTANT_FLOAT(t):
-    r'\d+\.\d+'  # Coincide con flotantes
-    t.value = float(t.value)
     return t
 
 def t_CONSTANT_BOOL(t):
