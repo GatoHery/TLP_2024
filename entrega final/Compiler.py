@@ -242,6 +242,7 @@ def processLine() :
     debug("======= ===== =========")
         
 def processToken(tok, pos) :
+    global hasErrors
     if tok.type == "ID" :
         idInstance = tokens.Identifier()
         if ids.get(tok.value) != None :
@@ -257,6 +258,13 @@ def processToken(tok, pos) :
             else : 
                 if lineTokens[i].type == "ID" and lineTokens[i].value[0] == lineTokens[i].value[0].upper() :
                     idInstance.dataType = lineTokens[i].value
+
+        # Verificamos si la variable ya ha sido declarada en el mismo ámbito
+        if idInstance.name in ids and ids[idInstance.name].scope == globalScope:
+            print(f"Error: existe variable repetida '{idInstance.name}' en la misma función.")
+            hasErrors += 1
+        else:
+            ids[idInstance.name] = idInstance
 
         # Buscamos el valor
         value = ""
