@@ -278,7 +278,7 @@ def processToken(tok, pos):
 
         # Assign value if it's a declaration with an assignment
         value = ""
-        if is_declaration and len(lineTokens) > (pos + 1) and lineTokens[pos + 1].type == "ASSIGNMENT":
+        if is_declaration and len(lineTokens) > (pos + 1) and lineTokens[pos + 1].type == "ASSIGN":
             for i in range(pos + 2, len(lineTokens)):
                 if lineTokens[i].type in ["COMMA", "SEMICOLON", "RPAREN", "COLON"]:
                     break
