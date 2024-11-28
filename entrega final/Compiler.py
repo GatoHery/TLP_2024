@@ -42,6 +42,18 @@ def validate_type_compatibility(var_type, value_type):
         return True
     return False
 
+def check_division_by_zero():
+    global hasErrors
+    for i in range(len(lineTokens) - 2):
+        if lineTokens[i].type == "ID" and lineTokens[i + 1].type == "DIVIDE":
+            if lineTokens[i + 2].type == "CONSTANT_INT" and lineTokens[i + 2].value == 0:
+                print(f"Error: División por cero detectada en la línea {lineTokens[i].lineno}.")
+                hasErrors += 1
+            elif lineTokens[i + 2].type == "ID":
+                divisor_name = lineTokens[i + 2].value
+                if divisor_name in ids and ids[divisor_name].value == "0":
+                    print(f"Error: División por cero detectada en la línea {lineTokens[i].lineno}.")
+                    hasErrors += 1
 # Ingresamos el primer nodo, MAIN
 
 debug(stack)
@@ -246,16 +258,17 @@ def agregar_pila(parentNode, produccion, token):
             else:
                 stack.append(st.crearNodo("N", parentNode, elemento))
 
-def processLine() :
+def processLine():
     debug("******* Linea *********")
     debug(lineTokens)
     debug("******* ***** *********")
     pos = 0
-    for tok in lineTokens :
+    for tok in lineTokens:
         processToken(tok, pos)
         pos += 1
-    debug("======= ===== =========")
-        
+    check_division_by_zero()  
+    debug("======= ===== =========")        
+
 def processToken(tok, pos):
     global hasErrors
     if tok.type == "ID":
@@ -309,6 +322,9 @@ def processToken(tok, pos):
                 idInstance.value = value
 
         ids[idInstance.name] = idInstance
+
+    # Check for division by zero
+    check_division_by_zero()
 
 def print_dictionary():
     for key in ids.values():
