@@ -352,7 +352,7 @@ def processToken(tok, pos):
 
         ids[idInstance.name] = idInstance
 
-    # Check for division by zero
+    # Revisar divisiones y restas
     check_division_by_zero()
     check_invalid_subtraction()  # Add this line to check for invalid subtractions
 
