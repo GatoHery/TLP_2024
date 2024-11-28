@@ -54,6 +54,34 @@ def check_division_by_zero():
                 if divisor_name in ids and ids[divisor_name].value == "0":
                     print(f"Error: División por cero detectada en la línea {lineTokens[i].lineno}.")
                     hasErrors += 1
+
+def check_invalid_subtraction():
+    global hasErrors
+    for i in range(len(lineTokens) - 2):
+        if lineTokens[i].type == "ID" and lineTokens[i + 1].type == "MINUS":
+            minuend_name = lineTokens[i].value
+            subtrahend_token = lineTokens[i + 2]
+
+            print(f"Checking subtraction: {minuend_name} - {subtrahend_token.value}")
+
+            if subtrahend_token.type == "CONSTANT_INT":
+                subtrahend_value = subtrahend_token.value
+                if minuend_name in ids:
+                    minuend_value = int(ids[minuend_name].value)
+                    print(f"Minuend value: {minuend_value}, Subtrahend value: {subtrahend_value}")
+                    if minuend_value < subtrahend_value:
+                        print(f"Error: Subtracción inválida detectada en la línea {lineTokens[i].lineno}. El sustraendo ({subtrahend_value}) es mayor que el minuendo ({minuend_value}).")
+                        hasErrors += 1
+            elif subtrahend_token.type == "ID":
+                subtrahend_name = subtrahend_token.value
+                if minuend_name in ids and subtrahend_name in ids:
+                    minuend_value = int(ids[minuend_name].value)
+                    subtrahend_value = int(ids[subtrahend_name].value)
+                    print(f"Minuend value: {minuend_value}, Subtrahend value: {subtrahend_value}")
+                    if minuend_value < subtrahend_value:
+                        print(f"Error: Subtracción inválida detectada en la línea {lineTokens[i].lineno}. El sustraendo ({subtrahend_value}) es mayor que el minuendo ({minuend_value}).")
+                        hasErrors += 1
+
 # Ingresamos el primer nodo, MAIN
 
 debug(stack)
@@ -266,8 +294,9 @@ def processLine():
     for tok in lineTokens:
         processToken(tok, pos)
         pos += 1
-    check_division_by_zero()  
-    debug("======= ===== =========")        
+    check_division_by_zero()
+    check_invalid_subtraction()  # Add this line to check for invalid subtractions
+    debug("======= ===== =========")
 
 def processToken(tok, pos):
     global hasErrors
@@ -325,6 +354,7 @@ def processToken(tok, pos):
 
     # Check for division by zero
     check_division_by_zero()
+    check_invalid_subtraction()  # Add this line to check for invalid subtractions
 
 def print_dictionary():
     for key in ids.values():
