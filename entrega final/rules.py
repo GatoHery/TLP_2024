@@ -672,14 +672,20 @@ table = [
     [OpAB, 'INCLUDE', None],
     [OpAB, 'LPAREN', ['LPAREN', OpAA, 'RPAREN', OpAA1]],
     [OpAB, 'RPAREN', None],
-    [OpAB, 'TIMES', None],
-    [OpAB, 'PLUS', None],
-    [OpAB, 'MINUS', None],
-    [OpAB, 'DIVIDE', None],
-    [OpAB, 'COMMA', None],
+
+    ["OpAB", "PLUS", ["PLUS", "OpAA"]],
+    ["OpAB", "MINUS", ["MINUS", "OpAA"]],  # Nueva regla para resta
+    ["OpAB", "TIMES", ["TIMES", "OpAA"]],
+    ["OpAB", "DIVIDE", ["DIVIDE", "OpAA"]],  # Nueva regla para división
+
     [OpAB, 'SEMICOLON', None],
     [OpAB, 'ASSIGNMENT', None],
     [OpAB, 'CONSTANT', ['CONSTANT']],
+
+    ["OpAA", "CONSTANT_INT", ["CONSTANT_INT"]],
+    ["OpAA", "CONSTANT_FLOAT", ["CONSTANT_FLOAT"]],
+    ["OpAA", "ID", ["ID", "OpAB"]],  # Un identificador puede ser seguido de operaciones
+    
     [OpAB, 'DATATYPE', None],
     [OpAB, 'ID', ['ID']],
     [OpAB, 'LBRACE', None],
