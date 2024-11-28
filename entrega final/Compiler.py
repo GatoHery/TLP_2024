@@ -27,6 +27,21 @@ def verificar_inclusion_bool(codigo):
         return False
     return True
 
+def validate_type_compatibility(var_type, value_type):
+    # Definir compatibilidades
+    type_map = {
+        "int": ["CONSTANT_INT"],
+        "float": ["CONSTANT_FLOAT", "CONSTANT_INT"],  # Los enteros pueden convertirse en flotantes
+        "char": ["CONSTANT_CHAR"],
+        "string": ["CONSTANT_STRING"],
+        "bool": ["CONSTANT_BOOL"],
+    }
+    
+    # Verificar compatibilidad
+    if var_type in type_map and value_type in type_map[var_type]:
+        return True
+    return False
+
 # Ingresamos el primer nodo, MAIN
 
 debug(stack)
@@ -284,7 +299,14 @@ def processToken(tok, pos):
                     break
                 else:
                     value += str(lineTokens[i].value)
-            idInstance.value = value
+
+            # Validate type compatibility
+            assigned_token = lineTokens[pos + 2]
+            if not validate_type_compatibility(idInstance.dataType, assigned_token.type):
+                print(f"Error: tipos incompatibles. No se puede asignar un valor de tipo '{assigned_token.type}' a una variable de tipo '{idInstance.dataType}'.")
+                hasErrors += 1
+            else:
+                idInstance.value = value
 
         ids[idInstance.name] = idInstance
 
