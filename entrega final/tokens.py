@@ -33,11 +33,11 @@ tokens = [
     "ASSIGNMENT",
     #nuevos tokens
     "ASSIGN",
+    "CONSTANT_CHAR",
     "CONSTANT_STRING",
     "CONSTANT_INT",
     "CONSTANT_FLOAT",
     "CONSTANT_BOOL",
-    "CONSTANT_CHAR",
     "CONSTANT_VOID",
     #fin nuevos tokens
     "COLON",
@@ -141,15 +141,21 @@ def t_CONSTANT_BOOL(t):
     t.value = True if t.value == "true" else False
     return t
 
+def t_CONSTANT_CHAR(t):
+    r'"[^"]"'  # Coincide con una sola letra entre comillas dobles
+    t.value = t.value[1:-1]  # Elimina las comillas
+    return t
+
 def t_CONSTANT_STRING(t):
     r'"[^"]*"'  # Coincide con cadenas entre comillas dobles
     t.value = t.value[1:-1]  # Elimina las comillas
     return t
 
-def t_CONSTANT_CHAR(t):
-    r"'.'"  # Coincide con un carácter entre comillas simples
-    t.value = t.value[1:-1]  # Elimina las comillas
-    return t
+# def t_CONSTANT_CHAR(t):
+#     r"'.'"  # Coincide con un carácter entre comillas simples
+#     t.value = t.value[1:-1]  # Elimina las comillas
+#     return t
+
 
 #cambio
 def t_RETURN(t):

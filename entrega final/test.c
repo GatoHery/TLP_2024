@@ -1,5 +1,5 @@
 void suma() {
-    int a = 1;
+    char a = "a";
 }
 
 int main() {

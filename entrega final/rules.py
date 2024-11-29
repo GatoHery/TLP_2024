@@ -164,6 +164,7 @@ table = [
 
     [OpAA, 'CONSTANT_INT', ['CONSTANT_INT']],  # Valor entero como operando
     [OpAA, 'CONSTANT_FLOAT', ['CONSTANT_FLOAT']],  # Valor flotante como operando
+    [OpAA, 'CONSTANT_CHAR', ['CONSTANT_CHAR']],  # Valor caracter como operando
     [OpAA, 'CONSTANT_STRING', ['CONSTANT_STRING']],  # Valor cadena como operando
     [OpAA, 'CONSTANT_BOOL', ['CONSTANT_BOOL']],  # Valor bool como operando
     [OpAA, 'ID', ['ID']],  # Identificador como operando
