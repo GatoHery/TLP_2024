@@ -34,6 +34,7 @@ def validate_type_compatibility(var_type, value_type):
         "int": ["int", "CONSTANT_INT"],
         "float": ["float", "CONSTANT_FLOAT", "int", "CONSTANT_INT"],  # Los enteros pueden convertirse en flotantes
         "char": ["char", "CONSTANT_CHAR"],
+        # "char": ["string", "CONSTANT_STRING"],
         "string": ["string", "CONSTANT_STRING"],
         "bool": ["bool", "CONSTANT_BOOL"],
         "void": []  # Void functions do not return a value
@@ -315,6 +316,7 @@ def get_expression_type(tokens):
             return "bool"
         elif tokens[0].type == "CONSTANT_CHAR":
             return "char"
+            # return "string"
         elif tokens[0].type == "CONSTANT_STRING":
             return "string"
         return tokens[0].type
@@ -326,6 +328,7 @@ def validate_type_compatibility(var_type, value_type):
         "int": ["CONSTANT_INT"],
         "float": ["CONSTANT_FLOAT", "CONSTANT_INT", "float"],  # Los enteros pueden convertirse en flotantes
         "char": ["CONSTANT_CHAR"],
+        # "char": ["CONSTANT_STRING"],
         "string": ["CONSTANT_STRING"],
         "bool": ["CONSTANT_BOOL"],
         "void": []  # Void functions do not return a value

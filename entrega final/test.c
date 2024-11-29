@@ -1,7 +1,7 @@
-void suma() {
-    int a = 1;
+string string() {
+    string a = "holaa";
 }
 
 int main() {
-    return suma();
+    return string();
 }
