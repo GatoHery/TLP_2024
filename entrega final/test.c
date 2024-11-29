@@ -1,4 +1,5 @@
 int main() {
-    bool a = true;
-    return a;
+    int a = 2;
+    int b = 0;
+    return b - a;
 }

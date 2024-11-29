@@ -27,6 +27,61 @@ def verificar_inclusion_bool(codigo):
         return False
     return True
 
+def validate_type_compatibility(var_type, value_type):
+    # Definir compatibilidades
+    type_map = {
+        "int": ["CONSTANT_INT"],
+        "float": ["CONSTANT_FLOAT", "CONSTANT_INT"],  # Los enteros pueden convertirse en flotantes
+        "char": ["CONSTANT_CHAR"],
+        "string": ["CONSTANT_STRING"],
+        "bool": ["CONSTANT_BOOL"],
+    }
+    
+    # Verificar compatibilidad
+    if var_type in type_map and value_type in type_map[var_type]:
+        return True
+    return False
+
+def check_division_by_zero():
+    global hasErrors
+    for i in range(len(lineTokens) - 2):
+        if lineTokens[i].type == "ID" and lineTokens[i + 1].type == "DIVIDE":
+            if lineTokens[i + 2].type == "CONSTANT_INT" and lineTokens[i + 2].value == 0:
+                print(f"Error: División por cero detectada en la línea {lineTokens[i].lineno}.")
+                hasErrors += 1
+            elif lineTokens[i + 2].type == "ID":
+                divisor_name = lineTokens[i + 2].value
+                if divisor_name in ids and ids[divisor_name].value == "0":
+                    print(f"Error: División por cero detectada en la línea {lineTokens[i].lineno}.")
+                    hasErrors += 1
+
+def check_invalid_subtraction():
+    global hasErrors
+    for i in range(len(lineTokens) - 2):
+        if lineTokens[i].type == "ID" and lineTokens[i + 1].type == "MINUS":
+            minuend_name = lineTokens[i].value
+            subtrahend_token = lineTokens[i + 2]
+
+            print(f"Checking subtraction: {minuend_name} - {subtrahend_token.value}")
+
+            if subtrahend_token.type == "CONSTANT_INT":
+                subtrahend_value = subtrahend_token.value
+                if minuend_name in ids:
+                    minuend_value = int(ids[minuend_name].value)
+                    print(f"Minuend value: {minuend_value}, Subtrahend value: {subtrahend_value}")
+                    if minuend_value < subtrahend_value:
+                        print(f"Error: Subtracción inválida detectada en la línea {lineTokens[i].lineno}. El sustraendo ({subtrahend_value}) es mayor que el minuendo ({minuend_value}).")
+                        hasErrors += 1
+            elif subtrahend_token.type == "ID":
+                subtrahend_name = subtrahend_token.value
+                if minuend_name in ids and subtrahend_name in ids:
+                    minuend_value = int(ids[minuend_name].value)
+                    subtrahend_value = int(ids[subtrahend_name].value)
+                    print(f"Minuend value: {minuend_value}, Subtrahend value: {subtrahend_value}")
+                    if minuend_value < subtrahend_value:
+                        print(f"Error: Subtracción inválida detectada en la línea {lineTokens[i].lineno}. El sustraendo ({subtrahend_value}) es mayor que el minuendo ({minuend_value}).")
+                        hasErrors += 1
+
 # Ingresamos el primer nodo, MAIN
 
 debug(stack)
@@ -231,16 +286,18 @@ def agregar_pila(parentNode, produccion, token):
             else:
                 stack.append(st.crearNodo("N", parentNode, elemento))
 
-def processLine() :
+def processLine():
     debug("******* Linea *********")
     debug(lineTokens)
     debug("******* ***** *********")
     pos = 0
-    for tok in lineTokens :
+    for tok in lineTokens:
         processToken(tok, pos)
         pos += 1
+    check_division_by_zero()
+    check_invalid_subtraction()  # Add this line to check for invalid subtractions
     debug("======= ===== =========")
-        
+
 def processToken(tok, pos):
     global hasErrors
     if tok.type == "ID":
@@ -278,15 +335,26 @@ def processToken(tok, pos):
 
         # Assign value if it's a declaration with an assignment
         value = ""
-        if is_declaration and len(lineTokens) > (pos + 1) and lineTokens[pos + 1].type == "ASSIGNMENT":
+        if is_declaration and len(lineTokens) > (pos + 1) and lineTokens[pos + 1].type == "ASSIGN":
             for i in range(pos + 2, len(lineTokens)):
                 if lineTokens[i].type in ["COMMA", "SEMICOLON", "RPAREN", "COLON"]:
                     break
                 else:
                     value += str(lineTokens[i].value)
-            idInstance.value = value
+
+            # Validate type compatibility
+            assigned_token = lineTokens[pos + 2]
+            if not validate_type_compatibility(idInstance.dataType, assigned_token.type):
+                print(f"Error: tipos incompatibles. No se puede asignar un valor de tipo '{assigned_token.type}' a una variable de tipo '{idInstance.dataType}'.")
+                hasErrors += 1
+            else:
+                idInstance.value = value
 
         ids[idInstance.name] = idInstance
+
+    # Revisar divisiones y restas
+    check_division_by_zero()
+    check_invalid_subtraction()  # Add this line to check for invalid subtractions
 
 def print_dictionary():
     for key in ids.values():
