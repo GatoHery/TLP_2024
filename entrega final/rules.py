@@ -671,6 +671,7 @@ table = [
 
     # Function Declarations
     [MS, 'DATATYPE', [Body, BodyAux]],
+    [MS, 'VOID', [Body, BodyAux]], # Function void declaration
     [Body, 'DATATYPE', ['DATATYPE', 'ID', SFnc]],  # Function declaration
     [SFnc, 'LPAREN', ['LPAREN', SPar, 'RPAREN', 'LBRACE', Blq, 'RBRACE']],  # Function definition
     [SPar, 'DATATYPE', ['DATATYPE', 'ID', ParAux]],  # Function parameters

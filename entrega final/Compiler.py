@@ -337,6 +337,7 @@ def validate_type_compatibility(var_type, value_type):
     if var_type in type_map and value_type in type_map[var_type]:
         return True
     return False
+
 def processToken(tok, pos):
     global hasErrors, current_function
     if tok.type == "ID":
@@ -405,6 +406,9 @@ def processToken(tok, pos):
                 return_expr_type = "int"
             if not validate_type_compatibility(return_type, return_expr_type):
                 print(f"Error: tipos incompatibles. No se puede retornar un valor de tipo '{return_expr_type}' en una función de tipo '{return_type}'.")
+                hasErrors += 1
+            elif return_type == "void" and return_expr_type != "void":
+                print(f"Error: la función de tipo 'void' no puede retornar un valor.")
                 hasErrors += 1
 
 def print_dictionary():

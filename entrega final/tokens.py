@@ -38,6 +38,7 @@ tokens = [
     "CONSTANT_FLOAT",
     "CONSTANT_BOOL",
     "CONSTANT_CHAR",
+    "CONSTANT_VOID",
     #fin nuevos tokens
     "COLON",
     "QUESTION",
@@ -71,7 +72,8 @@ dataTypes = {
     "char": "CHAR",
     "bool": "BOOL",
     "double" : "DOUBLE",
-    "string" : "STRING"    
+    "string" : "STRING"   ,
+    "void" : "VOID" 
 }
 
 # Add words reserved to tokens array
