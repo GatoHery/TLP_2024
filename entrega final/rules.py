@@ -668,6 +668,18 @@ table = [
     [OpAA, 'IF', None],
     [OpAA, 'ELSE', None],
     [OpAA, 'WHILE', None],
+
+    # Function Declarations
+    [MS, 'DATATYPE', [Body, BodyAux]],
+    [Body, 'DATATYPE', ['DATATYPE', 'ID', SFnc]],  # Function declaration
+    [SFnc, 'LPAREN', ['LPAREN', SPar, 'RPAREN', 'LBRACE', Blq, 'RBRACE']],  # Function definition
+    [SPar, 'DATATYPE', ['DATATYPE', 'ID', ParAux]],  # Function parameters
+    [SPar, 'RPAREN', ['vacia']],  # No parameters
+
+    # Function Calls
+    [OpAA, 'ID', ['ID', 'LPAREN', SPar, 'RPAREN']],  # Function call
+
+
     [OpAA, 'eof', None],
     [OpAB, 'INCLUDE', None],
     [OpAB, 'LPAREN', ['LPAREN', OpAA, 'RPAREN', OpAA1]],

@@ -298,6 +298,9 @@ def processLine():
     check_invalid_subtraction()  # Add this line to check for invalid subtractions
     debug("======= ===== =========")
 
+# Add a symbol table for functions
+functions = {}
+
 def processToken(tok, pos):
     global hasErrors
     if tok.type == "ID":
@@ -352,9 +355,38 @@ def processToken(tok, pos):
 
         ids[idInstance.name] = idInstance
 
+    # Handle function declarations
+    if tok.type == "DATATYPE" and pos + 2 < len(lineTokens) and lineTokens[pos + 2].type == "LPAREN":
+        func_name = lineTokens[pos + 1].value
+        func_type = tok.value
+        functions[func_name] = func_type
+
+    # Handle function calls
+    if tok.type == "ID" and pos + 1 < len(lineTokens) and lineTokens[pos + 1].type == "LPAREN":
+        func_name = tok.value
+        if func_name not in functions:
+            print(f"Error: función '{func_name}' no declarada.")
+            hasErrors += 1
+
     # Revisar divisiones y restas
     check_division_by_zero()
-    check_invalid_subtraction()  # Add this line to check for invalid subtractions
+    check_invalid_subtraction()
+
+def validate_type_compatibility(var_type, value_type):
+    # Definir compatibilidades
+    type_map = {
+        "int": ["CONSTANT_INT"],
+        "float": ["CONSTANT_FLOAT", "CONSTANT_INT"],  # Los enteros pueden convertirse en flotantes
+        "char": ["CONSTANT_CHAR"],
+        "string": ["CONSTANT_STRING"],
+        "bool": ["CONSTANT_BOOL"],
+        "void": []  # Void functions do not return a value
+    }
+    
+    # Verificar compatibilidad
+    if var_type in type_map and value_type in type_map[var_type]:
+        return True
+    return False
 
 def print_dictionary():
     for key in ids.values():

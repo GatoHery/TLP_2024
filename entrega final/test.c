@@ -1,5 +1,10 @@
-int main() {
-    int a = "a";
+float suma() {
+    int a = 1;
+    int b = 2;
 
-    return a;
+    return a+b;
+}
+
+int main() {
+    return suma();
 }
