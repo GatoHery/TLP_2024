@@ -1,6 +1,6 @@
 float suma() {
-    int a = 2;
-    int b = 0;
+    float a = 2.0;
+    float b = 1.0;
 
     return a / b;
 }

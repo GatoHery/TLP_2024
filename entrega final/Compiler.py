@@ -48,12 +48,12 @@ def check_division_by_zero():
     global hasErrors
     for i in range(len(lineTokens) - 2):
         if lineTokens[i].type == "ID" and lineTokens[i + 1].type == "DIVIDE":
-            if lineTokens[i + 2].type == "CONSTANT_INT" and lineTokens[i + 2].value == 0:
+            if (lineTokens[i + 2].type == "CONSTANT_INT" and lineTokens[i + 2].value == 0) or (lineTokens[i + 2].type == "CONSTANT_FLOAT" and lineTokens[i + 2].value == 0.0):
                 print(f"Error: División por cero detectada en la línea {lineTokens[i].lineno}.")
                 hasErrors += 1
             elif lineTokens[i + 2].type == "ID":
                 divisor_name = lineTokens[i + 2].value
-                if divisor_name in ids and ids[divisor_name].value == "0":
+                if divisor_name in ids and (ids[divisor_name].value == "0" or ids[divisor_name].value == "0.0"):
                     print(f"Error: División por cero detectada en la línea {lineTokens[i].lineno}.")
                     hasErrors += 1
 
