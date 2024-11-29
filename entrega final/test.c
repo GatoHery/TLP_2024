@@ -1,8 +1,8 @@
 float suma() {
-    int a = 1;
-    int b = 2;
+    int a = 2;
+    int b = 0;
 
-    return a+b;
+    return a / b;
 }
 
 int main() {
