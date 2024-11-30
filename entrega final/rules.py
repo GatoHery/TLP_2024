@@ -129,8 +129,8 @@ table = [
     [BlqAux, 'RBRACE', ['vacia']],  # Fin del bloque
     [SCont, 'RETURN', ['RETURN', 'expression', 'SEMICOLON']],
     [SCont, 'RETURN', ['RETURN', OpAA, 'SEMICOLON', SCont]],  # 'RETURN' seguido por lo que quieras procesar en SCont
-    
-    
+
+
     # Reglas de condicionales
     [MS, 'IF', [SIf]],  # Agrega una regla para 'if'
     [MS, 'ELSE', [Else]],  # Agrega una regla para 'else'
@@ -699,7 +699,7 @@ table = [
     ["OpAA", "CONSTANT_INT", ["CONSTANT_INT"]],
     ["OpAA", "CONSTANT_FLOAT", ["CONSTANT_FLOAT"]],
     ["OpAA", "ID", ["ID", "OpAB"]],  # Un identificador puede ser seguido de operaciones
-    
+
     [OpAB, 'DATATYPE', None],
     [OpAB, 'ID', ['ID']],
     [OpAB, 'LBRACE', None],

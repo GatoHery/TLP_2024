@@ -155,8 +155,6 @@ def t_CONSTANT_STRING(t):
 #     r"'.'"  # Coincide con un carácter entre comillas simples
 #     t.value = t.value[1:-1]  # Elimina las comillas
 #     return t
-
-
 #cambio
 def t_RETURN(t):
     r'\breturn\b'  # Coincide con la palabra completa 'return'
@@ -182,16 +180,13 @@ def t_DECIMALNUMBER(t):
     r"\d+(\.\d+){1}"
     t.value = float(t.value)
     return t
-
 def t_NUMBER(t):
     r"\d+"
     t.value = int(t.value)
     return t
-
 def t_STRINGLIT(t):
     r'\".*\"'
     return t
-
 def t_LETTER(t):
     r"\'.\'"
     t.value = t.value.replace("'", "")

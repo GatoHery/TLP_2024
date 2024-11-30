@@ -39,7 +39,7 @@ def validate_type_compatibility(var_type, value_type):
         "bool": ["bool", "CONSTANT_BOOL"],
         "void": []  # Void functions do not return a value
     }
-    
+
     # Verificar compatibilidad
     if var_type in type_map and value_type in type_map[var_type]:
         return True
@@ -98,7 +98,7 @@ def main():
     global errorRecovery
     global tokToProcess
     global hasErrors
-    
+
     inputFile = sys.argv[1]
     f = open(inputFile,'r')
     tokens.lexer.input(f.read() + "\n$")
@@ -213,9 +213,9 @@ def main():
         print_dictionary()
 
         #Imprimamos el árbol sintáctico
-        
+
       #Imprimamos el árbol sintáctico
-        
+
         opcion = input("\n¿Desea ver el árbol sintáctico? (y/n): ").strip().lower()
 
         if opcion == 'y':
@@ -235,8 +235,8 @@ def main():
 
     else:
         print(f"Errores de compilación: {inputFile} tiene {hasErrors} error(es).") 
-    
-    
+
+
     # err.createLists()
 
 def printError(inputFile, completeCode, rulesNode, tok, errorType):
@@ -246,7 +246,7 @@ def printError(inputFile, completeCode, rulesNode, tok, errorType):
         print(inputFile, "(" + str(tok.lineno) + "," + str(col) + "): error: Se esperaba", rulesNode.type, "y se encontró ", tok.value)
     else :
         print(inputFile, "(" + str(tok.lineno) + "," + str(col) + "): error: No se esperaba encontrar", tok.value)
-    
+
     # Obtenemos la línea de código donde se dio
     posIni = tok.lexpos
     posFin = tok.lexpos - 1
@@ -333,7 +333,7 @@ def validate_type_compatibility(var_type, value_type):
         "bool": ["CONSTANT_BOOL"],
         "void": []  # Void functions do not return a value
     }
-    
+
     # Verificar compatibilidad
     if var_type == value_type:
         return True

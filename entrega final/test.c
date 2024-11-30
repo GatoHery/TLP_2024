@@ -1,7 +1,8 @@
-string string() {
-    string a = "holaa";
+string sum() {
+    string a = "Hello";
+    return a;
 }
 
 int main() {
-    return string();
+    return sum();
 }
