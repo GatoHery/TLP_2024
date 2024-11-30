@@ -53,4 +53,104 @@ int main() {
     return a / b;
 }
 
+////////////////////////// TEST CASES //////////////////////////
+
+ /* 
+Listado de funciones semánticas funcionales:
+1- Ausencia de ; al final de la instrucción de código ✓
+	Ejemplo
+	int main() {
+    	int a =2;
+    	int b = 3
+    	}
+
+2- Variable repetida ✓ 
+	Ejemplo
+	int main() {
+	int a = 10;
+	int a = 35;
+	return a;
+	}
+
+3- Variables incompatibles de tipo (int recibiendo cadena)✓
+	Ejemplo
+	int main (){
+	int a ="como ta";
+	}
+
+4- Variables incompatibles de tipo (float recibiendo cadena)✓
+	Ejemplo
+	int main (){
+	float b ="qiubo";
+	}
+
+5- División entre 0 ✓
+	Ejemplo	
+	int main() {
+	int suma =10;
+	int resta = 0;
+	return suma/resta;
+	}
+
+6- Variable no declarada ✓
+	Ejemplo
+	int main() {
+	int suma =10;
+	return resta;
+	}
+
+7- Variables mal escritas previo a una declaración ✓
+	Ejemplo
+	int main() {
+	1.5 int k =10;
+	}
+
+8- Else sin if ✓
+	Ejemplo
+	int main() {
+	int a=2;
+
+	else {return a;
+	}
+	return a;
+	}
+
+9- Resta con resultado negativo (nuestro parser no maneja int a= -5; da error) ✓
+	Ejemplo 
+	int main() {
+	int a = 2;
+	int b = 3;
+    	return a-b;
+    	}
+
+10- Mal manejo sintaxis en return ✓
+	Ejemplo
+	int main() {
+    	int a =2;
+    	int b = 3;
+    	return a+;
+}
+
+11- Uso de bool sin librería ✓
+	int main() {
+    	bool a = true;
+    	return a;
+	}
+
+12- Mal uso de void ✓
+	e	Ejemplo
+	#include <stdio.h>
+
+	void sumar() {
+    int a = 5;   
+    int b = 3;    
+    return a + b;
+	}
+
+
+	int main() {
+    sumar();        
+
+    return 0;
+	}
 */

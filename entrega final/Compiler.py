@@ -18,6 +18,7 @@ syncTokens = ["COMMA", "SEMICOLON", "LBRACE", "RBRACE", "eof"]
 tokToProcess = True
 errorRecovery = False
 hasErrors = 0
+current_function = None
 
 mainNode = st.MainNode("N", None, rules.MS)
 stack = [st.crearNodo("N", None, "eof"), mainNode]
@@ -30,13 +31,15 @@ def verificar_inclusion_bool(codigo):
 def validate_type_compatibility(var_type, value_type):
     # Definir compatibilidades
     type_map = {
-        "int": ["CONSTANT_INT"],
-        "float": ["CONSTANT_FLOAT", "CONSTANT_INT"],  # Los enteros pueden convertirse en flotantes
-        "char": ["CONSTANT_CHAR"],
-        "string": ["CONSTANT_STRING"],
-        "bool": ["CONSTANT_BOOL"],
+        "int": ["int", "CONSTANT_INT"],
+        "float": ["float", "CONSTANT_FLOAT", "int", "CONSTANT_INT"],  # Los enteros pueden convertirse en flotantes
+        "char": ["char", "CONSTANT_CHAR"],
+        # "char": ["string", "CONSTANT_STRING"],
+        "string": ["string", "CONSTANT_STRING"],
+        "bool": ["bool", "CONSTANT_BOOL"],
+        "void": []  # Void functions do not return a value
     }
-    
+
     # Verificar compatibilidad
     if var_type in type_map and value_type in type_map[var_type]:
         return True
@@ -46,12 +49,12 @@ def check_division_by_zero():
     global hasErrors
     for i in range(len(lineTokens) - 2):
         if lineTokens[i].type == "ID" and lineTokens[i + 1].type == "DIVIDE":
-            if lineTokens[i + 2].type == "CONSTANT_INT" and lineTokens[i + 2].value == 0:
+            if (lineTokens[i + 2].type == "CONSTANT_INT" and lineTokens[i + 2].value == 0) or (lineTokens[i + 2].type == "CONSTANT_FLOAT" and lineTokens[i + 2].value == 0.0):
                 print(f"Error: División por cero detectada en la línea {lineTokens[i].lineno}.")
                 hasErrors += 1
             elif lineTokens[i + 2].type == "ID":
                 divisor_name = lineTokens[i + 2].value
-                if divisor_name in ids and ids[divisor_name].value == "0":
+                if divisor_name in ids and (ids[divisor_name].value == "0" or ids[divisor_name].value == "0.0"):
                     print(f"Error: División por cero detectada en la línea {lineTokens[i].lineno}.")
                     hasErrors += 1
 
@@ -95,7 +98,7 @@ def main():
     global errorRecovery
     global tokToProcess
     global hasErrors
-    
+
     inputFile = sys.argv[1]
     f = open(inputFile,'r')
     tokens.lexer.input(f.read() + "\n$")
@@ -210,9 +213,9 @@ def main():
         print_dictionary()
 
         #Imprimamos el árbol sintáctico
-        
+
       #Imprimamos el árbol sintáctico
-        
+
         opcion = input("\n¿Desea ver el árbol sintáctico? (y/n): ").strip().lower()
 
         if opcion == 'y':
@@ -232,8 +235,8 @@ def main():
 
     else:
         print(f"Errores de compilación: {inputFile} tiene {hasErrors} error(es).") 
-    
-    
+
+
     # err.createLists()
 
 def printError(inputFile, completeCode, rulesNode, tok, errorType):
@@ -243,7 +246,7 @@ def printError(inputFile, completeCode, rulesNode, tok, errorType):
         print(inputFile, "(" + str(tok.lineno) + "," + str(col) + "): error: Se esperaba", rulesNode.type, "y se encontró ", tok.value)
     else :
         print(inputFile, "(" + str(tok.lineno) + "," + str(col) + "): error: No se esperaba encontrar", tok.value)
-    
+
     # Obtenemos la línea de código donde se dio
     posIni = tok.lexpos
     posFin = tok.lexpos - 1
@@ -298,8 +301,48 @@ def processLine():
     check_invalid_subtraction()  # Add this line to check for invalid subtractions
     debug("======= ===== =========")
 
+# Add a symbol table for functions
+functions = {}
+
+def get_expression_type(tokens):
+    if tokens:
+        if tokens[0].type == "ID" and tokens[0].value in ids:
+            return ids[tokens[0].value].dataType
+        elif tokens[0].type == "CONSTANT_INT":
+            return "int"
+        elif tokens[0].type == "CONSTANT_FLOAT":
+            return "float"
+        elif tokens[0].type == "CONSTANT_BOOL":
+            return "bool"
+        elif tokens[0].type == "CONSTANT_CHAR":
+            return "char"
+            # return "string"
+        elif tokens[0].type == "CONSTANT_STRING":
+            return "string"
+        return tokens[0].type
+    return None
+
+def validate_type_compatibility(var_type, value_type):
+    # Definir compatibilidades
+    type_map = {
+        "int": ["CONSTANT_INT"],
+        "float": ["CONSTANT_FLOAT", "CONSTANT_INT", "float"],  # Los enteros pueden convertirse en flotantes
+        "char": ["CONSTANT_CHAR"],
+        # "char": ["CONSTANT_STRING"],
+        "string": ["CONSTANT_STRING"],
+        "bool": ["CONSTANT_BOOL"],
+        "void": []  # Void functions do not return a value
+    }
+
+    # Verificar compatibilidad
+    if var_type == value_type:
+        return True
+    if var_type in type_map and value_type in type_map[var_type]:
+        return True
+    return False
+
 def processToken(tok, pos):
-    global hasErrors
+    global hasErrors, current_function
     if tok.type == "ID":
         idInstance = tokens.Identifier()
         if ids.get(tok.value) is not None:
@@ -308,7 +351,6 @@ def processToken(tok, pos):
             idInstance.name = tok.value
             idInstance.scope = globalScope
 
-        # Check if the token is part of a declaration
         is_declaration = False
         for i in range(pos - 1, -1, -1):
             if lineTokens[i].type == "DATATYPE":
@@ -321,19 +363,16 @@ def processToken(tok, pos):
                 break
 
         if is_declaration:
-            # Check for redeclaration in the same scope
             if idInstance.name in ids and ids[idInstance.name].scope == globalScope:
                 print(f"Error: existe variable repetida '{idInstance.name}' en la misma función.")
                 hasErrors += 1
             else:
                 ids[idInstance.name] = idInstance
         else:
-            # Handle variable usage
             if idInstance.name not in ids:
                 print(f"Error: variable '{idInstance.name}' no declarada.")
                 hasErrors += 1
 
-        # Assign value if it's a declaration with an assignment
         value = ""
         if is_declaration and len(lineTokens) > (pos + 1) and lineTokens[pos + 1].type == "ASSIGN":
             for i in range(pos + 2, len(lineTokens)):
@@ -342,7 +381,6 @@ def processToken(tok, pos):
                 else:
                     value += str(lineTokens[i].value)
 
-            # Validate type compatibility
             assigned_token = lineTokens[pos + 2]
             if not validate_type_compatibility(idInstance.dataType, assigned_token.type):
                 print(f"Error: tipos incompatibles. No se puede asignar un valor de tipo '{assigned_token.type}' a una variable de tipo '{idInstance.dataType}'.")
@@ -350,11 +388,31 @@ def processToken(tok, pos):
             else:
                 idInstance.value = value
 
-        ids[idInstance.name] = idInstance
+    if tok.type == "DATATYPE" and pos + 2 < len(lineTokens) and lineTokens[pos + 2].type == "LPAREN":
+        func_name = lineTokens[pos + 1].value
+        func_type = tok.value
+        functions[func_name] = func_type
+        current_function = func_name
 
-    # Revisar divisiones y restas
-    check_division_by_zero()
-    check_invalid_subtraction()  # Add this line to check for invalid subtractions
+    if tok.type == "ID" and pos + 1 < len(lineTokens) and lineTokens[pos + 1].type == "LPAREN":
+        func_name = tok.value
+        if func_name not in functions:
+            print(f"Error: función '{func_name}' no declarada.")
+            hasErrors += 1
+
+    if tok.type == "RETURN":
+        return_type = functions.get(current_function, None)
+        if return_type:
+            return_expr_type = get_expression_type(lineTokens[pos + 1:])
+            if current_function == "main":
+                # Allow main to return any type
+                return_expr_type = "int"
+            if not validate_type_compatibility(return_type, return_expr_type):
+                print(f"Error: tipos incompatibles. No se puede retornar un valor de tipo '{return_expr_type}' en una función de tipo '{return_type}'.")
+                hasErrors += 1
+            elif return_type == "void" and return_expr_type != "void":
+                print(f"Error: la función de tipo 'void' no puede retornar un valor.")
+                hasErrors += 1
 
 def print_dictionary():
     for key in ids.values():

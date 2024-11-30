@@ -1,6 +1,7 @@
 import rules
 import copy
 
+# Clase Nodo del Arbol de Sintaxis Abstracta abreviado como AST
 class ASTNode:
     def __init__(self, symbol, parent, type, value = "", body = []):
         self.type = type
@@ -14,6 +15,7 @@ class ASTNode:
         return f"{self.type}"
 
 def crearNodo(symbol, parentNode, tipoNodo):
+    #Crea el nodo en el arbol de sintaxis abstracta
     if tipoNodo == rules.SLib:
         nodo = LibsNode(symbol, parentNode, tipoNodo, "","", [])
     elif tipoNodo == rules.SIf:
@@ -21,8 +23,7 @@ def crearNodo(symbol, parentNode, tipoNodo):
     else:
         nodo = ASTNode(symbol, parentNode, tipoNodo, "", [])
     if (parentNode != None and tipoNodo != 'vacia'):
-        # print("Asignando hijos al nodo: " + str(parentNode))
-        # print("  -> Nodo:" + str(nodo))
+        # Si hay un nodo padre y el nodo no es vacío, lo añadimos como hijo del padre.
         parentNode.body.append(nodo)
     return nodo
     
@@ -36,6 +37,7 @@ class MainNode(ASTNode):
 
 class LibsNode(ASTNode):
     def __init__(self, symbol, parent, type, name = "", value = "", body = []):
+        # Nodo que representa una biblioteca o librería.
         self.parent = parent
         self.type = type
         self.name = name
@@ -80,6 +82,8 @@ def walkTree(node, level = 0):
         for element in reversed(node.body):
             walkTree(element, level+1)
 
+
+# Elimina nodos vacíos y simplificando estructuras.
 def podeTree(node):
     if (node.body != None and node.body != []):
         # print("Recorremos los hijos de " + node.type)

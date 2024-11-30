@@ -1,5 +1,8 @@
+string sum() {
+    string a = "Hello";
+    return a;
+}
+
 int main() {
-    int a = 2;
-    int b = 0;
-    return b - a;
+    return sum();
 }

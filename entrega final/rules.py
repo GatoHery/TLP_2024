@@ -129,8 +129,8 @@ table = [
     [BlqAux, 'RBRACE', ['vacia']],  # Fin del bloque
     [SCont, 'RETURN', ['RETURN', 'expression', 'SEMICOLON']],
     [SCont, 'RETURN', ['RETURN', OpAA, 'SEMICOLON', SCont]],  # 'RETURN' seguido por lo que quieras procesar en SCont
-    
-    
+
+
     # Reglas de condicionales
     [MS, 'IF', [SIf]],  # Agrega una regla para 'if'
     [MS, 'ELSE', [Else]],  # Agrega una regla para 'else'
@@ -164,6 +164,7 @@ table = [
 
     [OpAA, 'CONSTANT_INT', ['CONSTANT_INT']],  # Valor entero como operando
     [OpAA, 'CONSTANT_FLOAT', ['CONSTANT_FLOAT']],  # Valor flotante como operando
+    [OpAA, 'CONSTANT_CHAR', ['CONSTANT_CHAR']],  # Valor caracter como operando
     [OpAA, 'CONSTANT_STRING', ['CONSTANT_STRING']],  # Valor cadena como operando
     [OpAA, 'CONSTANT_BOOL', ['CONSTANT_BOOL']],  # Valor bool como operando
     [OpAA, 'ID', ['ID']],  # Identificador como operando
@@ -668,6 +669,19 @@ table = [
     [OpAA, 'IF', None],
     [OpAA, 'ELSE', None],
     [OpAA, 'WHILE', None],
+
+    # Function Declarations
+    [MS, 'DATATYPE', [Body, BodyAux]],
+    [MS, 'VOID', [Body, BodyAux]], # Function void declaration
+    [Body, 'DATATYPE', ['DATATYPE', 'ID', SFnc]],  # Function declaration
+    [SFnc, 'LPAREN', ['LPAREN', SPar, 'RPAREN', 'LBRACE', Blq, 'RBRACE']],  # Function definition
+    [SPar, 'DATATYPE', ['DATATYPE', 'ID', ParAux]],  # Function parameters
+    [SPar, 'RPAREN', ['vacia']],  # No parameters
+
+    # Function Calls
+    [OpAA, 'ID', ['ID', 'LPAREN', SPar, 'RPAREN']],  # Function call
+
+
     [OpAA, 'eof', None],
     [OpAB, 'INCLUDE', None],
     [OpAB, 'LPAREN', ['LPAREN', OpAA, 'RPAREN', OpAA1]],
@@ -685,7 +699,7 @@ table = [
     ["OpAA", "CONSTANT_INT", ["CONSTANT_INT"]],
     ["OpAA", "CONSTANT_FLOAT", ["CONSTANT_FLOAT"]],
     ["OpAA", "ID", ["ID", "OpAB"]],  # Un identificador puede ser seguido de operaciones
-    
+
     [OpAB, 'DATATYPE', None],
     [OpAB, 'ID', ['ID']],
     [OpAB, 'LBRACE', None],

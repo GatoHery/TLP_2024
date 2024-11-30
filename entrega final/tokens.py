@@ -33,11 +33,12 @@ tokens = [
     "ASSIGNMENT",
     #nuevos tokens
     "ASSIGN",
+    "CONSTANT_CHAR",
     "CONSTANT_STRING",
     "CONSTANT_INT",
     "CONSTANT_FLOAT",
     "CONSTANT_BOOL",
-    "CONSTANT_CHAR",
+    "CONSTANT_VOID",
     #fin nuevos tokens
     "COLON",
     "QUESTION",
@@ -71,7 +72,8 @@ dataTypes = {
     "char": "CHAR",
     "bool": "BOOL",
     "double" : "DOUBLE",
-    "string" : "STRING"    
+    "string" : "STRING"   ,
+    "void" : "VOID" 
 }
 
 # Add words reserved to tokens array
@@ -139,13 +141,13 @@ def t_CONSTANT_BOOL(t):
     t.value = True if t.value == "true" else False
     return t
 
-def t_CONSTANT_STRING(t):
-    r'"[^"]*"'  # Coincide con cadenas entre comillas dobles
+def t_CONSTANT_CHAR(t):
+    r'"[^"]"'  # Coincide con una sola letra entre comillas dobles
     t.value = t.value[1:-1]  # Elimina las comillas
     return t
 
-def t_CONSTANT_CHAR(t):
-    r"'.'"  # Coincide con un carácter entre comillas simples
+def t_CONSTANT_STRING(t):
+    r'"[^"]*"'  # Coincide con cadenas entre comillas dobles
     t.value = t.value[1:-1]  # Elimina las comillas
     return t
 
@@ -168,32 +170,6 @@ def t_ID(t):
 def t_DATATYPE(t):
     r'(int|float|char|double|bool)'
     return t
-
-'''
-def t_DECIMALNUMBER(t):
-    r"\d+(\.\d+){1}"
-    t.value = float(t.value)
-    return t
-
-def t_NUMBER(t):
-    r"\d+"
-    t.value = int(t.value)
-    return t
-
-def t_STRINGLIT(t):
-    r'\".*\"'
-    return t
-
-def t_LETTER(t):
-    r"\'.\'"
-    t.value = t.value.replace("'", "")
-    return t
-'''
-
-# cambios
-# def t_ASSIGN(t):
-#     r'='
-#     return t
 
 def t_SEMICOLON(t):
     r';'
