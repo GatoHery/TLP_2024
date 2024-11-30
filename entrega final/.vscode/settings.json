@@ -42,6 +42,8 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "test3.C": "cpp",
+        "test5.C": "cpp"
     }
 }
